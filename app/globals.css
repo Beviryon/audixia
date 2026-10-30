@@ -1,0 +1,521 @@
+@import "tailwindcss";
+
+/* Palette de l'application : à utiliser via les classes Tailwind (bg-surface, text-muted…) */
+:root {
+  --background: #ffffff;
+  --foreground: #1c1a33;
+  --surface: #f6f5ff;
+  --line: #e4e0ff;
+  --muted: #56536f;
+  --accent: #3107af;
+  --accent-hover: #27088a;
+  --accent-soft: #f1efff;
+  --accent-contrast: #ffffff;
+  --good: #0a7f45;
+  --good-soft: #e5f6ec;
+  --average: #b34d00;
+  --average-soft: #fff1e3;
+  --poor: #c9281c;
+  --poor-soft: #fdeceb;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-average: var(--average);
+  --color-average-soft: var(--average-soft);
+  --color-poor: var(--poor);
+  --color-poor-soft: var(--poor-soft);
+  --font-sans: var(--font-jakarta);
+  --color-ink: #0d0b26;
+  --color-brand: #3107af;
+  --color-brand-hover: #27088a;
+  --color-gold: #ffc35a;
+  --color-lilac: #a698ff;
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0d0b26;
+    --foreground: #f5f4ff;
+    --surface: #15123a;
+    --line: #2f2a6b;
+    --muted: #b9b5da;
+    --accent: #a698ff;
+    --accent-hover: #c4baff;
+    --accent-soft: #211c55;
+    --accent-contrast: #0d0b26;
+    --good: #45d98a;
+    --good-soft: #10291d;
+    --average: #ffab5c;
+    --average-soft: #33220f;
+    --poor: #ff7a70;
+    --poor-soft: #36181a;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Largeur commune à toutes les pages : à modifier ici uniquement */
+@layer components {
+  .page-container {
+    width: 100%;
+    max-width: 100rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 40rem) {
+    .page-container {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .page-container {
+      padding-inline: 3rem;
+    }
+  }
+}
+
+/* Repère visible pour la navigation au clavier */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Remplissage des barres de score à l'affichage */
+@keyframes bar-fill {
+  from {
+    width: 0;
+  }
+}
+
+.bar-fill {
+  animation: bar-fill 900ms ease-out;
+}
+
+/* Le repère suit le remplissage de la barre */
+@keyframes marker-slide {
+  from {
+    left: 0;
+  }
+}
+
+.marker-slide {
+  animation: marker-slide 900ms ease-out;
+}
+
+/* Barre de progression indéterminée pendant l'audit */
+@keyframes progress-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(350%);
+  }
+}
+
+.progress-bar {
+  animation: progress-slide 1.8s ease-in-out infinite;
+}
+
+/* Halo coloré derrière les zones mises en avant */
+.hero-glow {
+  background:
+    radial-gradient(38rem 24rem at 85% 10%, var(--accent-soft), transparent 70%),
+    radial-gradient(24rem 14rem at 0% 50%, var(--good-soft), transparent 70%);
+}
+
+/* Apparition progressive des blocs (« backwards » laisse les effets de survol actifs) */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+.rise {
+  animation: rise 600ms ease-out backwards;
+}
+
+/* Flottement des éléments d'illustration */
+@keyframes float {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.float {
+  animation: float 5s ease-in-out infinite;
+}
+
+.float-delayed {
+  animation: float 6s ease-in-out 1.2s infinite;
+}
+
+/* Ligne de scan de l'écran de chargement */
+@keyframes scan {
+  0%,
+  100% {
+    top: 0;
+  }
+  50% {
+    top: calc(100% - 3px);
+  }
+}
+
+.scan-line {
+  animation: scan 3.2s ease-in-out infinite;
+}
+
+/* Onde autour des illustrations */
+@keyframes ripple {
+  from {
+    opacity: 0.6;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+
+.ripple {
+  animation: ripple 2.8s ease-out infinite;
+}
+
+/* Clignotement du point de contrôle en cours */
+@keyframes pulse-dot {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.pulse-dot {
+  animation: pulse-dot 1.2s ease-in-out infinite;
+}
+
+/* Écran d'attente : ambiance d'outil d'analyse, identique en mode clair et sombre */
+.audit-stage {
+  background: radial-gradient(70rem 34rem at 50% -8rem, #2a1a86 0%, transparent 70%), #0d0b26;
+}
+
+/* Trame discrète qui défile lentement */
+.stage-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgb(148 163 184 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(148 163 184 / 0.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at 50% 40%, black 30%, transparent 80%);
+  animation: grid-drift 24s linear infinite;
+}
+
+@keyframes grid-drift {
+  to {
+    background-position: 48px 48px;
+  }
+}
+
+.stage-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.28;
+  animation: blob-drift 18s ease-in-out infinite alternate;
+}
+
+.stage-blob-1 {
+  top: -10rem;
+  right: 8%;
+  width: 28rem;
+  height: 28rem;
+  background: #3f1fcc;
+}
+
+.stage-blob-2 {
+  bottom: -12rem;
+  left: 10%;
+  width: 30rem;
+  height: 30rem;
+  background: #5a3fe6;
+  animation-delay: -7s;
+}
+
+@keyframes blob-drift {
+  to {
+    transform: translate(4rem, 2rem) scale(1.15);
+  }
+}
+
+.audit-scene {
+  animation: scene-in 600ms ease-out;
+}
+
+@keyframes scene-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.scene-text {
+  animation: scene-text-in 500ms ease-out;
+}
+
+@keyframes scene-text-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.check-pop {
+  animation: scene-text-in 450ms ease-out backwards;
+}
+
+/* Tête lumineuse de la barre de progression */
+.progress-head {
+  box-shadow:
+    0 0 0 4px rgb(255 195 90 / 0.2),
+    0 0 18px 4px rgb(255 195 90 / 0.65);
+  animation: head-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes head-pulse {
+  50% {
+    box-shadow:
+      0 0 0 7px rgb(255 195 90 / 0.12),
+      0 0 26px 8px rgb(255 195 90 / 0.8);
+  }
+}
+
+/* Les éléments SVG animés se transforment autour de leur propre centre */
+.audit-scene [class*="anim-"] {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Tracé qui se dessine puis reste affiché (pathLength="1" sur l'élément) */
+.anim-draw {
+  stroke-dasharray: 1;
+  animation: anim-draw 4s ease-in-out infinite;
+}
+
+@keyframes anim-draw {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0.2;
+  }
+  45%,
+  90% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+/* Données qui circulent le long d'une liaison */
+.anim-flow {
+  stroke-dasharray: 4 12;
+  animation: anim-flow 1s linear infinite;
+}
+
+@keyframes anim-flow {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+/* Barre qui se remplit depuis la gauche */
+.audit-scene .anim-grow-x {
+  transform-origin: left center;
+  animation: anim-grow-x 4s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+@keyframes anim-grow-x {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  30%,
+  90% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1);
+  }
+}
+
+/* Barre qui monte depuis le bas */
+.audit-scene .anim-grow-y {
+  transform-origin: bottom center;
+  animation: anim-grow-y 4s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+@keyframes anim-grow-y {
+  0% {
+    transform: scaleY(0);
+  }
+  30%,
+  90% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0.02);
+  }
+}
+
+/* Élément qui apparaît puis laisse la place au cycle suivant */
+.anim-appear {
+  animation: anim-appear 4s ease-out infinite;
+}
+
+@keyframes anim-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  18%,
+  88% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Curseur vertical qui parcourt la chronologie */
+.anim-sweep {
+  animation: anim-sweep 4s linear infinite;
+}
+
+@keyframes anim-sweep {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(480px);
+  }
+}
+
+/* Faisceau qui parcourt le code de haut en bas */
+.anim-scan-y {
+  animation: anim-scan-y 3.2s ease-in-out infinite alternate;
+}
+
+@keyframes anim-scan-y {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(232px);
+  }
+}
+
+/* Repère de navigation au clavier qui passe d'un élément à l'autre */
+.anim-focus {
+  animation: anim-focus 5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes anim-focus {
+  0%,
+  18% {
+    transform: translate(0, 0);
+  }
+  25%,
+  43% {
+    transform: translate(0, 64px);
+  }
+  50%,
+  68% {
+    transform: translate(0, 128px);
+  }
+  75%,
+  93% {
+    transform: translate(158px, 128px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* Élément qui s'allume à son tour */
+.anim-lit {
+  animation: anim-lit 3.6s ease-in-out infinite;
+}
+
+@keyframes anim-lit {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  20%,
+  40% {
+    opacity: 1;
+  }
+}
+
+/* Onde discrète autour d'un élément */
+.anim-signal {
+  animation: anim-signal 2.4s ease-out infinite;
+}
+
+@keyframes anim-signal {
+  from {
+    opacity: 0.6;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audit-scene,
+  .audit-scene *,
+  .audit-stage *,
+  .scene-text {
+    animation: none !important;
+  }
+
+  .pulse-dot,
+  .bar-fill,
+  .marker-slide,
+  .rise,
+  .float,
+  .float-delayed,
+  .scan-line,
+  .ripple {
+    animation: none;
+  }
+
+  .progress-bar {
+    animation: none;
+    width: 100%;
+    opacity: 0.5;
+  }
+}
